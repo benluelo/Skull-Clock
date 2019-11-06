@@ -237,7 +237,7 @@ function joinalert(currentevent, eventrunning){
     console.log("\n\n\033[4m\033[41mJoin Alert!\033[0m\n")
 
     // check if theres an event running
-    if(eventrunning){
+    if(!eventrunning){
 
         // Get the Guild and store it under the variable "list"
         const list = client.guilds.get("641023205074796544")
@@ -272,7 +272,7 @@ function joinalert(currentevent, eventrunning){
         
     }else{
 
-        
+
     }
 }
 
