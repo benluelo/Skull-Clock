@@ -1,6 +1,7 @@
 // import discord
 const Discord = require("discord.js")
 const client = new Discord.Client()
+require('dotenv').config({ path: '.env' })
 
 // event start point
 const eventFirst = new Date(1572901200000)
@@ -23,7 +24,6 @@ const TimerBot = "641088516763156491"
 
 // bot ID
 const bot = "641039236786814976"
-
 
 // ini vars
 var start = false
@@ -89,6 +89,12 @@ client.on("ready", () => {
     // console.log("number of events between first event and now:", ((d.getTime() - eventFirst.getTime()) / hours15 ) )
     // console.log(((d.getTime() - eventFirst.getTime()) / 3600000))
     // #endregion
+
+    // check if event is running
+    if((d.getTime() - eventFirst.getTime()) <= (hours1 * 4)){
+        console.log((d.getTime() - eventFirst.getTime()) / (hours1 * 4))
+    }
+    
 
     //get time of next event
     let nextEventMS = d.getTime() + (hours15 - ((d.getTime() - eventFirst.getTime()) % hours15))
@@ -186,11 +192,7 @@ function skullalert(event){
 
             // send actual message
             console.log("\033[34m"+member.user.tag+"\033[0m", t[2])
-            console.log(new Date(event))
-            console.log(new Date(event - (5*hours1)))
             console.log("Next skull event is at", t[0].readableDate(), "and the time to join the event closes at", t[1].readableDate())
-
-            // console.log(`${t[0].readableDate()}`, t[1].readableDate())
             
             // create embed
             const embed = new Discord.RichEmbed()
@@ -204,13 +206,10 @@ function skullalert(event){
                 .setFooter('benluelo')
             
             // send embed
-            member.send(embed)
+            // member.send(embed)
         })
+        console.log("")
     })
-
-    // then you can send a message in there like
-    // message.channel.send("Skull Alert!")
-    // setTimeout( () => { joinalert(message) }, 2000)
 
     // schedule next event
     setTimeout( () => {
@@ -266,4 +265,4 @@ function joinalert(event){
     })
 }
 
-client.login("NjQxMDM5MjM2Nzg2ODE0OTc2.XcCkVg.1kQYAO5yOvXgDtu4530IVwTLeQ8")
+client.login(process.env.TOKEN)
