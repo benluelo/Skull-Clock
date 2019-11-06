@@ -3,6 +3,8 @@ const Discord = require("discord.js")
 const client = new Discord.Client()
 require('dotenv').config({ path: '.env' })
 
+// #region so many constants!
+
 // event start point
 const eventFirst = new Date(1572901200000)
 
@@ -27,6 +29,9 @@ const bot = "641039236786814976"
 
 // ini vars
 var start = false
+var eventRunning = false
+
+// #endregion
 
 // new date prototype
 Date.prototype.readableDate = function() {
@@ -76,6 +81,7 @@ Date.prototype.readableDate = function() {
 // when the bot's ready
 client.on("ready", () => {
 
+    console.log("═".repeat(50) + "\n")
     // log bot running
     console.log(`${client.user.username} is online!`)
 
@@ -91,10 +97,11 @@ client.on("ready", () => {
     // #endregion
 
     // check if event is running
-    if((d.getTime() - eventFirst.getTime()) <= (hours1 * 4)){
-        console.log((d.getTime() - eventFirst.getTime()) / (hours1 * 4))
+    if(((d.getTime() - eventFirst.getTime()) % hours15) <= (hours1 * 4)){
+        console.log("Event currently running!")
+        eventRunning = true
+        console.log(((d.getTime() - eventFirst.getTime()) % hours15) / (hours1 * 4))
     }
-    
 
     //get time of next event
     let nextEventMS = d.getTime() + (hours15 - ((d.getTime() - eventFirst.getTime()) % hours15))
@@ -107,7 +114,7 @@ client.on("ready", () => {
     skullalert(nextEventMS)
 })
 
-/*
+/* this is here for future stuffs
 client.on("message", (message) => {
     if(!start) return
     //check if message is a dm & ignore it
@@ -147,7 +154,7 @@ client.on("message", (message) => {
 function skullalert(event){
 
     // console alert
-    console.log("\033[4m\033[41mSkull Alert!\033[0m\n")
+    console.log("\n\n\033[4m\033[41mSkull Alert!\033[0m\n")
 
     // Get the Guild and store it under the variable "list"
     const list = client.guilds.get("641023205074796544")
@@ -224,45 +231,49 @@ function skullalert(event){
     }, (hours15 - hours4 - mins10))
 }
 
-function joinalert(event){
+function joinalert(currentevent, eventrunning){
 
-    // Get the Guild and store it under the variable "list"
-    const list = client.guilds.get("641023205074796544")
+    // console alert
+    console.log("\n\n\033[4m\033[41mJoin Alert!\033[0m\n")
 
-    // loop through roles
-    list.roles.forEach(role => {
+    // check if theres an event running
+    if(eventrunning){
 
-        // skip @everyone and Timer Bot roles
-        if(role.id == (everyone || TimerBot)) return
+        // Get the Guild and store it under the variable "list"
+        const list = client.guilds.get("641023205074796544")
 
-        console.log("\033[33mRole name:\033[0m", role.name)
+        // loop through roles
+        list.roles.forEach(role => {
 
-        // loop through each member with said role
-        role.members.forEach(member => {
-            // skip Timer Bot
-            if(member.user.bot) return
-            // switch message per timezone
-            switch(role.id){
-                case timezone_minus_5:
-                    console.log(member.user.tag, "-5")
-                    console.log("Time to join the event closes in 10 minutes! ")
-                    console.log("")
-                    // member.send("Sorry for the spam! -5")
-                    break
-                case timezone_plus_8:
-                    console.log(member.user.tag, "+8")
-                    console.log("Time to join the event closes in 10 minutes! ")
-                    console.log("")
-                    // member.send("Sorry for the spam! +8")
-                    break
-                default:
-                    console.log(member.user.tag, "default")
-                    console.log("Time to join the event closes in 10 minutes! ")
-                    console.log("")
-                    // member.send("Sorry for the spam! No specified timezone.")
-            }
+            // skip @everyone and Timer Bot roles
+            if((role.id == everyone) || (role.id == TimerBot)) return
+
+            console.log("\033[33mRole name:\033[0m", role.name)
+
+            // loop through each member with said role
+            role.members.forEach(member => {
+
+                // skip Timer Bot
+                if(member.user.bot) return
+
+                // switch message per timezone
+                switch(role.id){
+                    case timezone_minus_5:
+                        console.log(member.user.tag, "-5")
+                        break
+                    case timezone_plus_8:
+                        console.log(member.user.tag, "+8")
+                        break
+                    default:
+                        console.log(member.user.tag, "default")
+                }
+            })
         })
-    })
+        
+    }else{
+
+        
+    }
 }
 
 client.login(process.env.TOKEN)
